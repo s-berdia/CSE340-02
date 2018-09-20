@@ -6,19 +6,20 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include "task.h"
 
 using namespace std;
 
 int main (int argc, char* argv[])
 {
     int task;
-
+    Task t;
     if (argc < 2)
     {
         cout << "Error: missing argument\n";
         return 1;
     }
-
+    Gram * start = t.parse_gram();
     /*
        Note that by convention argv[0] is the name of your executable,
        and the first argument to your program is stored in argv[1]
@@ -38,25 +39,31 @@ int main (int argc, char* argv[])
        use the lexer.
      */
 
+
     switch (task) {
         case 1:
             // TODO: perform task 1.
+            t.taskone();
             break;
 
         case 2:
             // TODO: perform task 2.
+            t.tasktwo();
             break;
 
         case 3:
             // TODO: perform task 3.
+            t.taskthree();
             break;
 
         case 4:
             // TODO: perform task 4.
+            t.taskfour();
             break;
 
         case 5:
             // TODO: perform task 5.
+            t.taskfive();
             break;
 
         default:

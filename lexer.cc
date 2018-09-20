@@ -16,7 +16,7 @@ using namespace std;
 
 // Lexer modified for FIRST & FOLLOW project
 
-string reserved[] = { "END_OF_FILE", "ARROW", "HASH", "DOUBLEHASH", "ID", "ERROR" };
+string reserved[] = { "END_OF_FILE", "ARROW", "HASH", "DOUBLEHASH", "ID", "ERROR" , "OR"};
 
 void Token::Print()
 {
@@ -140,6 +140,9 @@ Token LexicalAnalyzer::GetToken()
                 }
                 tmp.token_type = HASH;
             }
+            return tmp;
+        case '|':
+            tmp.token_type = OR;
             return tmp;
         default:
             if (isalpha(c)) {

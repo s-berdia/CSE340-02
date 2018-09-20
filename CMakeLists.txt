@@ -3,4 +3,4 @@ project(lexer+pasrser)
 
 set(CMAKE_CXX_STANDARD 98)
 
-add_executable(CSE340-02 project2.cc lexer.cc inputbuf.cc)
+add_executable(CSE340-02 task.cc project2.cc lexer.cc inputbuf.cc)
