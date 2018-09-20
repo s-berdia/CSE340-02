@@ -1,5 +1,6 @@
 .idea/
 .DS_Store
+tests/.DS_Store
 cmake-build-debug/
 CSE340F18_Project2.pdf
 CSE340F18_Project2_how-to-test.pdf
