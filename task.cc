@@ -1,85 +1,96 @@
-/*
- * Copyright (C) Sandeep Balaji, 2017
- *
- * Do not share this file with anyone
- */
+//
+// Created by Sandeep Balaji on 9/29/18.
+//
 #include <iostream>
-#include <cstdio>
-#include <cstdlib>
 #include "task.h"
 #include "lexer.h"
 
-using namespace std;
-
-Gram * Task::parse_gram(){
+void task::parse_gram(){
     LexicalAnalyzer lexer;
     Token token = lexer.GetToken();
-    Gram * fin = new Gram();
+    map<string, list<list<string>>> grams;
     while(token.token_type != DOUBLEHASH) {
-        Gram * g = new Gram();
-        fin = g;
-        if(Task::start != NULL){
-            start = g;
+        string terminal = token.lexeme;
+        token = lexer.GetToken();
+        if(token.token_type != ARROW){
+            cout << "Error Syntax" << endl;
         }
-        if(token.token_type == ID){
-            g->id = token.lexeme;
-            listgram.push_back(gram_list(token.lexeme, g));
-            cout << token.lexeme << endl;
-        }
-        else if(token.token_type == ARROW) {
-            cout << "->" << endl;
+        token = lexer.GetToken();
+        list<string> terms;
+        while (token.token_type != HASH){
+            terms.push_back(token.lexeme);
             token = lexer.GetToken();
-            list<list<Gram *> > gl;
-            while (token.token_type != HASH){
-                list<Gram *> gs;
-                while (token.token_type != OR) {
-                    if(token.token_type == HASH){
-                        lexer.UngetToken(token);
-                        break;
-                    }
-                    Gram * g1 = new Gram();
-                    g1->id = token.lexeme;
-                    listgram.push_back(gram_list(token.lexeme, g1));
-                    cout << token.lexeme << endl;
-                    gs.push_back(g1);
-                    token = lexer.GetToken();
-                    cout << token.token_type << endl;
-                }
-                token = lexer.GetToken();
-                cout << token.token_type << endl;
-                gl.push_back(gs);
-            }
-            g->grams = gl;
+        }
+        if(grams.find(terminal) != grams.end()){
+            grams.find(terminal)->second.push_back(terms);
+        }else{
+            list<list<string>> tmp;
+            tmp.push_back(terms);
+            grams[terminal] = tmp;
         }
         token = lexer.GetToken();
     }
-    return fin;
+    setGrams(grams);
 }
 
-void Task::taskone() {
-    cout << "Task 1" << endl;
+void task::taskone() {
+    list<string> terminals;
+    list<string> non_terminals;
+    for (auto const& gram : getGrams()) {
+        terminals.push_back(gram.first);
+    }
+    for (auto const& gram : getGrams()){
+//        cout << gram.first << endl;
+        for (auto const& g : gram.second) {
+            for (auto const& l : g) {
+//                cout << l << endl;
+                if(find(non_terminals.begin(), non_terminals.end(), l) == non_terminals.end()
+                   && find(terminals.begin(), terminals.end(), l) == terminals.end()){
+                    non_terminals.push_back(l);
+                }
+            }
+        }
+    }
+    setNon_terminals(non_terminals);
+    setTerminals(terminals);
 }
 
-void Task::tasktwo() {
-    cout << "Task 2" << endl;
+void task::tasktwo() {
+    cout << "task2 2" << endl;
 }
 
-void Task::taskthree() {
-    cout << "Task 3" << endl;
+void task::taskthree() {
+    cout << "task2 3" << endl;
 }
 
-void Task::taskfour() {
-    cout << "Task 4" << endl;
+void task::taskfour() {
+    cout << "task2 4" << endl;
 }
 
-void Task::taskfive() {
-    cout << "Task 5" << endl;
+void task::taskfive() {
+    cout << "task2 5" << endl;
 }
 
-Gram *Task::getStart() const {
-    return start;
+map<string, list<list<string>>> &task::getGrams() {
+    return grams;
 }
 
-void Task::setStart(Gram *start) {
-    Task::start = start;
+void task::setGrams(map<string, list<list<string>>> &grams) {
+    task::grams = grams;
+}
+
+const list<string> &task::getTerminals() const {
+    return terminals;
+}
+
+void task::setTerminals(const list<string> &terminals) {
+    task::terminals = terminals;
+}
+
+const list<string> &task::getNon_terminals() const {
+    return non_terminals;
+}
+
+void task::setNon_terminals(const list<string> &non_terminals) {
+    task::non_terminals = non_terminals;
 }

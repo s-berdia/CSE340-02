@@ -13,13 +13,14 @@ using namespace std;
 int main (int argc, char* argv[])
 {
     int task;
-    Task t;
+    class task t;
     if (argc < 2)
     {
         cout << "Error: missing argument\n";
         return 1;
     }
-    Gram * start = t.parse_gram();
+    t.parse_gram();
+//    t.setStart(start);
     /*
        Note that by convention argv[0] is the name of your executable,
        and the first argument to your program is stored in argv[1]
@@ -43,7 +44,14 @@ int main (int argc, char* argv[])
     switch (task) {
         case 1:
             // TODO: perform task 1.
+//            cout << "Terminal:" << start->id << endl;
             t.taskone();
+            for (auto const& l : t.getTerminals()) {
+                cout << l << " ";
+            }
+            for (auto const& l : t.getNon_terminals()) {
+                cout << l << " ";
+            }
             break;
 
         case 2:

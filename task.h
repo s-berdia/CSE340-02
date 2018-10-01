@@ -6,27 +6,15 @@
 #define LEXER_PASRSER_TASK_H
 #endif //LEXER_PASRSER_TASK_H
 #include <list>
+#include <map>
 
 using namespace std;
 
-struct Gram{
-    string id;
-    list<list<Gram *> > grams;
-};
-
-struct gram_list{
-    string id;
-    Gram * gram;
-    gram_list(string i, Gram * g){
-        id =i;
-        gram = g;
-    }
-};
-
-class Task {
+class task {
 private:
-    Gram * start = NULL;
-    list<gram_list> listgram;
+    map<string, list<list<string>>> grams;
+    list<string> terminals;
+    list<string> non_terminals;
 
 public:
     void taskone();
@@ -34,7 +22,11 @@ public:
     void taskthree();
     void taskfour();
     void taskfive();
-    Gram * parse_gram();
-    Gram *getStart() const;
-    void setStart(Gram *start);
+    void parse_gram();
+    map<string, list<list<string>>> &getGrams();
+    void setGrams(map<string, list<list<string>>> &grams);
+    const list<string> &getTerminals() const;
+    void setTerminals(const list<string> &terminals);
+    const list<string> &getNon_terminals() const;
+    void setNon_terminals(const list<string> &non_terminals);
 };
