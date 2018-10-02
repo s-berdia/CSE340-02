@@ -27,6 +27,12 @@ int main (int argc, char* argv[])
      */
 
     task = atoi(argv[1]);
+    t.taskone();
+    t.tasktwo();
+    t.taskthree();
+    for (auto const &a: t.getOrders()){
+        cout << a.first << "->" << a.second << endl;
+    }
 
     // TODO: Read the input grammar at this point from standard input
 
@@ -44,26 +50,34 @@ int main (int argc, char* argv[])
     switch (task) {
         case 1:
             // TODO: perform task 1.
-//            cout << "Terminal:" << start->id << endl;
-            t.taskone();
-            for (auto const& l : t.getTerminals()) {
+            for (auto const& l : t.getNon_terminals()) {
                 cout << l << " ";
             }
-            for (auto const& l : t.getNon_terminals()) {
+            for (auto const& l : t.getTerminals()) {
                 cout << l << " ";
             }
             break;
 
         case 2:
             // TODO: perform task 2.
-            t.tasktwo();
             break;
 
-        case 3:
+        case 3:{
             // TODO: perform task 3.
-            t.taskthree();
-            break;
-
+            map<string, list<string>> first = t.getFirst();
+            for (auto const &i : t.getNon_terminals()){
+                cout << "FIRST(" << i << ") = { ";
+                int k = 0;
+                for (auto const &j: first[i]){
+                    cout << " " << j;
+                    k++;
+                    if(k < first[i].size()){
+                        cout << ",";
+                    }
+                }
+                cout << " }" << endl;
+            }
+            break;}
         case 4:
             // TODO: perform task 4.
             t.taskfour();

@@ -15,6 +15,9 @@ private:
     map<string, list<list<string>>> grams;
     list<string> terminals;
     list<string> non_terminals;
+    map<string, list<string>> first;
+    map<string, list<string>> follow;
+    map<string, int> orders;
 
 public:
     void taskone();
@@ -29,4 +32,8 @@ public:
     void setTerminals(const list<string> &terminals);
     const list<string> &getNon_terminals() const;
     void setNon_terminals(const list<string> &non_terminals);
+    void setFirst(const map<string, list<string>> &first);
+    const map<string, list<string>> &getFirst() const;
+    const map<string, int> &getOrders() const;
+    void setOrders(const map<string, int> &orders);
 };
