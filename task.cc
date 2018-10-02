@@ -47,7 +47,6 @@ void task::taskone() {
     list<string> terminals;
     for (auto const& gram : getGrams()) {
         non_terminals.push_back(gram.first);
-        cout << gram.first << endl;
     }
     for (auto const& gram : getGrams()){
         for (auto const& g : gram.second) {
@@ -89,7 +88,7 @@ void task::taskthree() {
                 for (auto const &m: temp){
                     if(find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()){
                         first[i.first].push_back(m);
-                        cout << "1:" << i.first << "->" << m << endl;
+//                        cout << "1:" << i.first << "->" << m << endl;
                     }
                 }
             }
@@ -97,7 +96,7 @@ void task::taskthree() {
                 if (!j.empty()){
                     if(find(first[i.first].begin(), first[i.first].end(), j.front()) == first[i.first].end()) {
                         first[i.first].push_back(j.front());
-                        cout << "3:" << i.first << "->" << j.front() << endl;
+//                        cout << "3:" << i.first << "->" << j.front() << endl;
                     }
                 }
             }
@@ -111,7 +110,7 @@ void task::taskthree() {
                     for (auto const &m: foo){
                         if(find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()){
                             first[i.first].push_back(m);
-                            cout << "2:" << i.first << "->" << m << endl;
+//                            cout << "2:" << i.first << "->" << m << endl;
                         }
                     }
                     epsilon = true;
@@ -129,6 +128,28 @@ void task::taskthree() {
         }
     }
     setFirst(first);
+}
+
+list<string> task::sortThem(list<string> terms){
+    map<string, int> ods = getOrders();
+    int i, j, n = (int) terms.size(), k = 0;
+    string arr[n];
+    for (auto const &ar: terms){
+        arr[k] = ar;
+        k++;
+    }
+    for (i = 0; i < n-1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (ods[arr[j]] > ods[arr[j+1]]) {
+                arr[j].swap(arr[j+1]);
+            }
+        }
+    }
+    list<string> foo;
+    for (int m = 0; m < n; m++){
+        foo.push_back(arr[m]);
+    }
+    return foo;
 }
 
 void task::taskfour() {

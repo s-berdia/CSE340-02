@@ -36,4 +36,5 @@ public:
     const map<string, list<string>> &getFirst() const;
     const map<string, int> &getOrders() const;
     void setOrders(const map<string, int> &orders);
+    list<string> sortThem(list<string> terms);
 };

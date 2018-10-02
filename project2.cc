@@ -30,9 +30,6 @@ int main (int argc, char* argv[])
     t.taskone();
     t.tasktwo();
     t.taskthree();
-    for (auto const &a: t.getOrders()){
-        cout << a.first << "->" << a.second << endl;
-    }
 
     // TODO: Read the input grammar at this point from standard input
 
@@ -50,10 +47,10 @@ int main (int argc, char* argv[])
     switch (task) {
         case 1:
             // TODO: perform task 1.
-            for (auto const& l : t.getNon_terminals()) {
+            for (auto const& l : t.sortThem(t.getNon_terminals())) {
                 cout << l << " ";
             }
-            for (auto const& l : t.getTerminals()) {
+            for (auto const& l : t.sortThem(t.getTerminals())) {
                 cout << l << " ";
             }
             break;
@@ -65,10 +62,10 @@ int main (int argc, char* argv[])
         case 3:{
             // TODO: perform task 3.
             map<string, list<string>> first = t.getFirst();
-            for (auto const &i : t.getNon_terminals()){
+            for (auto const &i : t.sortThem(t.getNon_terminals())){
                 cout << "FIRST(" << i << ") = { ";
                 int k = 0;
-                for (auto const &j: first[i]){
+                for (auto const &j: t.sortThem(first[i])){
                     cout << " " << j;
                     k++;
                     if(k < first[i].size()){
