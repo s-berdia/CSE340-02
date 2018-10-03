@@ -18,6 +18,7 @@ private:
     map<string, list<string>> first;
     map<string, list<string>> follow;
     map<string, int> orders;
+    list<string> uselessSymbols;
 
 public:
     void taskone();
@@ -34,7 +35,14 @@ public:
     void setNon_terminals(const list<string> &non_terminals);
     void setFirst(const map<string, list<string>> &first);
     const map<string, list<string>> &getFirst() const;
+    void setFollow(const map<string, list<string>> &follow);
+    const map<string, list<string>> &getFollow() const;
     const map<string, int> &getOrders() const;
     void setOrders(const map<string, int> &orders);
+    const list<string> &getUselessSymbols() const;
+    void setUselessSymbols(const list<string> &uselessSymbols);
     list<string> sortThem(list<string> terms);
+    bool compare_map(map<string, list<string>> first, map<string, list<string>> second);
+    bool compare_list(list<string> first, list<string> second);
+    bool compare_map1(map<string, bool> first, map<string, bool> second);
 };

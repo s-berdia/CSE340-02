@@ -20,7 +20,6 @@ int main (int argc, char* argv[])
         return 1;
     }
     t.parse_gram();
-//    t.setStart(start);
     /*
        Note that by convention argv[0] is the name of your executable,
        and the first argument to your program is stored in argv[1]
@@ -30,6 +29,8 @@ int main (int argc, char* argv[])
     t.taskone();
     t.tasktwo();
     t.taskthree();
+    t.taskfour();
+    t.taskfive();
 
     // TODO: Read the input grammar at this point from standard input
 
@@ -45,7 +46,7 @@ int main (int argc, char* argv[])
 
 
     switch (task) {
-        case 1:
+        case 1:{
             // TODO: perform task 1.
             for (auto const& l : t.sortThem(t.getNon_terminals())) {
                 cout << l << " ";
@@ -54,16 +55,40 @@ int main (int argc, char* argv[])
                 cout << l << " ";
             }
             break;
-
-        case 2:
+        }
+        case 2:{
             // TODO: perform task 2.
+            list<string> useless = t.getUselessSymbols();
+            for (auto const& l : t.sortThem(t.getNon_terminals())) {
+                if (find(useless.begin(), useless.end(), l) != useless.end()){
+                    continue;
+                }
+                for (auto const& i : t.getGrams()[l]){
+                    bool use = true;
+                    for (auto const& k : i){
+                        if (find(useless.begin(), useless.end(), k) != useless.end()){
+                            use = false;
+                        }
+                    }
+                    if (use){
+                        cout << l << " ->" ;
+                        if (i.empty()){
+                            cout << " #";
+                        }
+                        for (auto const& k : i){
+                            cout << " " << k;
+                        }
+                        cout << endl;
+                    }
+                }
+            }
             break;
-
+        }
         case 3:{
             // TODO: perform task 3.
             map<string, list<string>> first = t.getFirst();
             for (auto const &i : t.sortThem(t.getNon_terminals())){
-                cout << "FIRST(" << i << ") = { ";
+                cout << "FIRST(" << i << ") = {";
                 int k = 0;
                 for (auto const &j: t.sortThem(first[i])){
                     cout << " " << j;
@@ -74,15 +99,27 @@ int main (int argc, char* argv[])
                 }
                 cout << " }" << endl;
             }
-            break;}
-        case 4:
-            // TODO: perform task 4.
-            t.taskfour();
             break;
-
+        }
+        case 4:{
+            // TODO: perform task 4.
+            map<string, list<string>> follow = t.getFollow();
+            for (auto const &i : t.sortThem(t.getNon_terminals())){
+                cout << "FOLLOW(" << i << ") = {";
+                int k = 0;
+                for (auto const &j: t.sortThem(follow[i])){
+                    cout << " " << j;
+                    k++;
+                    if(k < follow[i].size()){
+                        cout << ",";
+                    }
+                }
+                cout << " }" << endl;
+            }
+            break;
+        }
         case 5:
             // TODO: perform task 5.
-            t.taskfive();
             break;
 
         default:
@@ -91,4 +128,3 @@ int main (int argc, char* argv[])
     }
     return 0;
 }
-

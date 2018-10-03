@@ -11,9 +11,11 @@ void task::parse_gram(){
     map<string, list<list<string>>> grams;
     map<string, int> orders;
     int order = 1;
-    orders[token.lexeme] = order;
-    order++;
     while(token.token_type != DOUBLEHASH) {
+        if(orders.find(token.lexeme) == orders.end()){
+            orders[token.lexeme] = order;
+            order++;
+        }
         string terminal = token.lexeme;
         token = lexer.GetToken();
         if(token.token_type != ARROW){
@@ -63,71 +65,200 @@ void task::taskone() {
 }
 
 void task::tasktwo() {
-//    cout << "task2" << endl;
+    map <string, bool> generatingSymbols;
+    map <string, bool> fooSymbols;
+    map <string, bool> reachableSymbols;
+    list<string> uselessSymbols;
+    for (auto const &i: getNon_terminals()){
+        generatingSymbols[i] = false;
+        reachableSymbols[i] = false;
+    }
+    for (auto const &i: getTerminals()){
+        generatingSymbols[i] = true;
+        reachableSymbols[i] = false;
+    }
+    while(!compare_map1(generatingSymbols, fooSymbols)){
+        fooSymbols = generatingSymbols;
+        for (auto const &i: getGrams()){
+            for (auto const &j: i.second){
+                bool gen = true;
+                for (auto const &k: j){
+                    if (!generatingSymbols[k]){
+                        gen = false;
+                    }
+                }
+                if(gen){
+                    generatingSymbols[i.first] = true;
+                    break;
+                }
+            }
+        }
+    }
+    reachableSymbols[sortThem(getNon_terminals()).front()] = true;
+    map<string, list<list<string>>> grams = getGrams();
+    for (auto const &i: sortThem(getNon_terminals())){
+        for (auto const &j: grams[i]){
+            bool reach = true;
+            for (auto const &k: j){
+                if (!generatingSymbols[k]){
+                    reach = false;
+                }
+            }
+            if (reach){
+                for (auto const &k: j){
+                    reachableSymbols[k] = true;
+                }
+            }
+        }
+    }
+    for (auto const &i: getNon_terminals()){
+        if (!(generatingSymbols[i] && reachableSymbols[i])){
+            uselessSymbols.push_back(i);
+        }
+    }
+    for (auto const &i: getTerminals()){
+        if (!(generatingSymbols[i] && reachableSymbols[i])){
+            uselessSymbols.push_back(i);
+        }
+    }
+    setUselessSymbols(uselessSymbols);
 }
 
 void task::taskthree() {
     map<string, list<string>> first;
-    first.insert(pair<string, list<string>> ("#", {"#"}));
+    first["#"] = {"#"};
     for (auto const &i: getTerminals()){
         first.insert(pair<string, list<string>> (i, {i}));
     }
     for (auto const &i: getNon_terminals()){
         first.insert(pair<string, list<string>> (i, {}));
     }
-    for (auto const &i: getGrams()){
-        for (auto const &j: i.second){
-            if(j.empty()){
-                if(find(first[i.first].begin(), first[i.first].end(), "#") == first[i.first].end()) {
-                    first.at(i.first).push_back("#");
-                }
-            }
-            if(find(getNon_terminals().begin(), getNon_terminals().end(), j.front()) != getNon_terminals().end()){
-                list <string> temp = first.at(j.front());
-                temp.remove("#");
-                for (auto const &m: temp){
-                    if(find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()){
-                        first[i.first].push_back(m);
-//                        cout << "1:" << i.first << "->" << m << endl;
+    map<string, list<string>> foo;
+    while (!compare_map(first, foo)){
+        foo = first;
+        for (auto const &i: getGrams()){
+            for (auto const &j: i.second){
+                if(j.empty()){
+                    if(find(first[i.first].begin(), first[i.first].end(), "#") == first[i.first].end()) {
+                        // cout << "4:" << i.first << "->" << "#" << endl;
+                        first[i.first].push_back("#");
+                        break;
                     }
                 }
-            }
-            else{
-                if (!j.empty()){
-                    if(find(first[i.first].begin(), first[i.first].end(), j.front()) == first[i.first].end()) {
-                        first[i.first].push_back(j.front());
-//                        cout << "3:" << i.first << "->" << j.front() << endl;
-                    }
-                }
-            }
-            bool epsilon = false;
-            list<string>::iterator it;
-            for(auto it = j.begin(); it != j.end(); it++){
-                if(find(first.at(it->c_str()).begin(), first.at(it->c_str()).end(), "#") != first.at(it->c_str()).end()){
-                    //Add next of (&k +1) to first[i.first]
-                    list <string> foo = first.at(next(it)->c_str());
-                    foo.remove("#");
-                    for (auto const &m: foo){
+                if(find(getNon_terminals().begin(), getNon_terminals().end(), j.front()) != getNon_terminals().end()){
+                    list <string> temp = first.at(j.front());
+                    temp.remove("#");
+                    for (auto const &m: temp){
                         if(find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()){
                             first[i.first].push_back(m);
-//                            cout << "2:" << i.first << "->" << m << endl;
+                           // cout << "1:" << i.first << "->" << m << endl;
                         }
                     }
-                    epsilon = true;
                 }
                 else{
-                    epsilon = false;
-                    break;
+                    if (!j.empty()){
+                        if(find(first[i.first].begin(), first[i.first].end(), j.front()) == first[i.first].end()) {
+                            first[i.first].push_back(j.front());
+                           // cout << "3:" << i.first << "->" << j.front() << endl;
+                        }
+                    }
                 }
-            }
-            if (epsilon){
-                if(find(first[i.first].begin(), first[i.first].end(), "#") == first[i.first].end()) {
-                    first[i.first].push_back("#");
+                bool epsilon = false;
+                list<string>::iterator it;
+                for(auto it = j.begin(); it != j.end(); it++){
+                    if(find(first.at(it->c_str()).begin(), first.at(it->c_str()).end(), "#") != first.at(it->c_str()).end()){
+                        //Add next of (&k +1) to first[i.first]
+                        if (next(it) != j.end()) {
+                            list<string> foo = first.at(next(it)->c_str());
+                            foo.remove("#");
+                            for (auto const &m: foo) {
+                                if (find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()) {
+                                    first[i.first].push_back(m);
+                                    // cout << "2:" << i.first << "->" << m << endl;
+                                }
+                            }
+                        }
+                        epsilon = true;
+                    }
+                    else{
+                        epsilon = false;
+                        break;
+                    }
+                }
+                if (epsilon){
+                    if(find(first[i.first].begin(), first[i.first].end(), "#") == first[i.first].end()) {
+                        first[i.first].push_back("#");
+                    }
                 }
             }
         }
     }
     setFirst(first);
+}
+
+void task::taskfour() {
+    map<string, list<string>> follow;
+    map<string, list<string>> first = getFirst();
+    map<string, list<string>> foo;
+    follow[sortThem(getNon_terminals()).front()] = {"$"};
+    while (!compare_map(follow, foo)){
+        foo = follow;
+        for (auto const &i : getGrams()){
+            for (auto const &j: i.second){
+                list<string>::reverse_iterator it;
+                bool eplison = true;
+                for (auto it = j.rbegin(); it != j.rend(); it++){
+                    if (eplison){
+                        if (find(getNon_terminals().begin(), getNon_terminals().end(), it->c_str()) != getNon_terminals().end()){
+                            eplison = false;
+                            list <string> temp = follow[i.first];
+                            temp.remove("#");
+                            for (auto const &m: temp){
+                                if(find(follow[it->c_str()].begin(), follow[it->c_str()].end(), m) == follow[it->c_str()].end()){
+                                    follow[it->c_str()].push_back(m);
+                                }
+                            }
+                        }
+                    }
+                    if (find(first[it->c_str()].begin(), first[it->c_str()].end(), "#") != first[it->c_str()].end()){
+                        eplison = true;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                list<string>::iterator it1;
+                list<string>::iterator it2;
+                for (auto it1 = j.begin(); it1 != j.end(); it1++){
+                    if (find(getNon_terminals().begin(), getNon_terminals().end(), it1->c_str()) == getNon_terminals().end()){
+                        continue;
+                    }
+                    bool epl = true;
+                    for (auto it2 = next(it1); it2 != j.end(); it2++){
+                        if (!epl){
+                            break;
+                        }
+                        list <string> temp = first[it2->c_str()];
+                        temp.remove("#");
+                        for (auto const &m: temp){
+                            if(find(follow[it1->c_str()].begin(), follow[it1->c_str()].end(), m) == follow[it1->c_str()].end()){
+                                follow[it1->c_str()].push_back(m);
+                            }
+                        }
+                        epl = false;
+                        if (find(first[it2->c_str()].begin(), first[it2->c_str()].end(), "#") != first[it2->c_str()].end()){
+                            epl = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    setFollow(follow);
+}
+
+void task::taskfive() {
+    // cout << "task2 5" << endl;
 }
 
 list<string> task::sortThem(list<string> terms){
@@ -152,12 +283,53 @@ list<string> task::sortThem(list<string> terms){
     return foo;
 }
 
-void task::taskfour() {
-    cout << "task2 4" << endl;
+bool task::compare_map(map<string, list<string>> first, map<string, list<string>> second){
+    if (first.size() != second.size()){
+        return false;
+    }
+    for (auto const &t: first){
+        if (!compare_list(second[t.first], t.second)){
+            return false;
+        }
+    }
+    return true;
 }
 
-void task::taskfive() {
-    cout << "task2 5" << endl;
+bool task::compare_map1(map<string, bool> first, map<string, bool> second){
+    if (first.size() != second.size()){
+        return false;
+    }
+    for (auto const &t: first){
+        if (second[t.first] != t.second){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool task::compare_list(list<string> first, list<string> second){
+    if (first.size() != second.size()){
+        return false;
+    }
+    first = sortThem(first);
+    second = sortThem(second);
+    list<string>::iterator it1;
+    list<string>::iterator it2 = second.begin();
+    for (it1 = first.begin(); it1 != first.end(); it1++){
+        if (*it1 != *it2){
+            cout << *it1 << *it2 << endl;
+            return false;
+        }
+        it2++;
+    }
+    return true;
+}
+
+const list<string> &task::getUselessSymbols() const{
+    return uselessSymbols;
+}
+void task::setUselessSymbols(const list<string> &uselessSymbols){
+    task::uselessSymbols = uselessSymbols;
 }
 
 map<string, list<list<string>>> &task::getGrams() {
@@ -190,6 +362,14 @@ void task::setFirst(const map<string, list<string>> &first) {
 
 const map<string, list<string>> &task::getFirst() const {
     return first;
+}
+
+void task::setFollow(const map<string, list<string>> &follow) {
+    task::follow = follow;
+}
+
+const map<string, list<string>> &task::getFollow() const {
+    return follow;
 }
 
 const map<string, int> &task::getOrders() const {
