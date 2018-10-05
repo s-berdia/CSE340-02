@@ -143,8 +143,8 @@ void task::taskthree() {
                     if(find(first[i.first].begin(), first[i.first].end(), "#") == first[i.first].end()) {
                         // cout << "4:" << i.first << "->" << "#" << endl;
                         first[i.first].push_back("#");
-                        break;
                     }
+                    break;
                 }
                 if(find(getNon_terminals().begin(), getNon_terminals().end(), j.front()) != getNon_terminals().end()){
                     list <string> temp = first[j.front()];
