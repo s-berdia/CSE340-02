@@ -144,7 +144,7 @@ void task::taskthree() {
                         // cout << "4:" << i.first << "->" << "#" << endl;
                         first[i.first].push_back("#");
                     }
-                    break;
+                    continue;
                 }
                 if(find(getNon_terminals().begin(), getNon_terminals().end(), j.front()) != getNon_terminals().end()){
                     list <string> temp = first[j.front()];
