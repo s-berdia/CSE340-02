@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include "task.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -59,11 +60,14 @@ int main (int argc, char* argv[])
         case 2:{
             // TODO: perform task 2.
             list<string> useless = t.getUselessSymbols();
-            for (auto const& l : t.sortThem(t.getNon_terminals())) {
-                if (find(useless.begin(), useless.end(), l) != useless.end()){
+            for (auto const &a: useless){
+                cout << "Useless:" << a << endl;
+            }
+            for (auto const& l : t.getGrams()) {
+                if (find(useless.begin(), useless.end(), l.first) != useless.end()){
                     continue;
                 }
-                for (auto const& i : t.getGrams()[l]){
+                for (auto const& i : l.second){
                     bool use = true;
                     for (auto const& k : i){
                         if (find(useless.begin(), useless.end(), k) != useless.end()){
@@ -71,7 +75,7 @@ int main (int argc, char* argv[])
                         }
                     }
                     if (use){
-                        cout << l << " ->" ;
+                        cout << l.first << " ->" ;
                         if (i.empty()){
                             cout << " #";
                         }

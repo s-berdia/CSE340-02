@@ -4,6 +4,7 @@
 #include <iostream>
 #include "task.h"
 #include "lexer.h"
+#include <algorithm>
 
 void task::parse_gram(){
     LexicalAnalyzer lexer;
