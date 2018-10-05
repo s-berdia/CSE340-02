@@ -60,14 +60,16 @@ int main (int argc, char* argv[])
         case 2:{
             // TODO: perform task 2.
             list<string> useless = t.getUselessSymbols();
-            for (auto const &a: useless){
-                cout << "Useless:" << a << endl;
+            map<string, list<list<string>>> grams = t.getGrams();
+            list<string> non_terminals = t.getNon_terminals();
+            if (find(useless.begin(), useless.end(), t.sortThem(non_terminals).front()) != useless.end()){
+                break;
             }
-            for (auto const& l : t.getGrams()) {
-                if (find(useless.begin(), useless.end(), l.first) != useless.end()){
+            for (auto const& l : t.sortThem(non_terminals)) {
+                if (find(useless.begin(), useless.end(), l) != useless.end()){
                     continue;
                 }
-                for (auto const& i : l.second){
+                for (auto const& i : grams[l]){
                     bool use = true;
                     for (auto const& k : i){
                         if (find(useless.begin(), useless.end(), k) != useless.end()){
@@ -75,7 +77,7 @@ int main (int argc, char* argv[])
                         }
                     }
                     if (use){
-                        cout << l.first << " ->" ;
+                        cout << l << " ->" ;
                         if (i.empty()){
                             cout << " #";
                         }
@@ -124,6 +126,7 @@ int main (int argc, char* argv[])
         }
         case 5:
             // TODO: perform task 5.
+            cout << t.getParser() << endl;
             break;
 
         default:

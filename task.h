@@ -19,6 +19,7 @@ private:
     map<string, list<string>> follow;
     map<string, int> orders;
     list<string> uselessSymbols;
+    string parser;
 
 public:
     void taskone();
@@ -39,6 +40,8 @@ public:
     const map<string, list<string>> &getFollow() const;
     const map<string, int> &getOrders() const;
     void setOrders(const map<string, int> &orders);
+    const string &getParser() const;
+    void setParser(const string &parser);
     const list<string> &getUselessSymbols() const;
     void setUselessSymbols(const list<string> &uselessSymbols);
     list<string> sortThem(list<string> terms);

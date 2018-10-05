@@ -5,6 +5,7 @@
 #include "task.h"
 #include "lexer.h"
 #include <algorithm>
+#include <set>
 
 void task::parse_gram(){
     LexicalAnalyzer lexer;
@@ -74,6 +75,7 @@ void task::tasktwo() {
         generatingSymbols[i] = false;
         reachableSymbols[i] = false;
     }
+    generatingSymbols["#"] = true;
     for (auto const &i: getTerminals()){
         generatingSymbols[i] = true;
         reachableSymbols[i] = false;
@@ -259,7 +261,46 @@ void task::taskfour() {
 }
 
 void task::taskfive() {
-    // cout << "task2 5" << endl;
+    map<string, list<string>> first = getFirst();
+    map<string, list<string>> follow = getFollow();
+    for (auto const &h: first){
+        if (find(h.second.begin(), h.second.end(), "#") != h.second.end()){
+            bool intersect = true;
+            for (auto const &l: first[h.first]){
+                for (auto const &k: follow[h.first]){
+                    if (l == k){
+                        intersect = false;
+                    }
+                }
+            }
+            if (!intersect){
+                setParser("NO");
+                return;
+            }
+        }
+    }
+    for (auto const &h: getGrams()){
+        int size = 0;
+        set<string> temp;
+        for (auto const &k: h.second){
+            if (k.empty()){
+                 temp.insert("#");
+                 size += 1;
+            }
+            else{
+                for (auto const &q: first[k.front()]){
+                    // cout << h.first << ":" << k.front() << ":" << q << endl;
+                    temp.insert(q);
+                    size += 1;
+                }
+            }
+        }
+        if(size != temp.size()){
+            setParser("NO");
+            return;
+        }
+    }
+    setParser("YES");
 }
 
 list<string> task::sortThem(list<string> terms){
@@ -379,4 +420,12 @@ const map<string, int> &task::getOrders() const {
 
 void task::setOrders(const map<string, int> &orders) {
     task::orders = orders;
+}
+
+const string &task::getParser() const{
+    return parser;
+}
+
+void task::setParser(const string &parser){
+    task::parser = parser;
 }
