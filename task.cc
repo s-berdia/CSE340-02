@@ -147,7 +147,7 @@ void task::taskthree() {
                     }
                 }
                 if(find(getNon_terminals().begin(), getNon_terminals().end(), j.front()) != getNon_terminals().end()){
-                    list <string> temp = first.at(j.front());
+                    list <string> temp = first[j.front()];
                     temp.remove("#");
                     for (auto const &m: temp){
                         if(find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()){
@@ -167,10 +167,10 @@ void task::taskthree() {
                 bool epsilon = false;
                 list<string>::iterator it;
                 for(auto it = j.begin(); it != j.end(); it++){
-                    if(find(first.at(it->c_str()).begin(), first.at(it->c_str()).end(), "#") != first.at(it->c_str()).end()){
+                    if(find(first[it->c_str()].begin(), first[it->c_str()].end(), "#") != first[it->c_str()].end()){
                         //Add next of (&k +1) to first[i.first]
                         if (next(it) != j.end()) {
-                            list<string> foo = first.at(next(it)->c_str());
+                            list<string> foo = first[next(it)->c_str()];
                             foo.remove("#");
                             for (auto const &m: foo) {
                                 if (find(first[i.first].begin(), first[i.first].end(), m) == first[i.first].end()) {
