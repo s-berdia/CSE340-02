@@ -48,4 +48,5 @@ public:
     bool compare_map(map<string, list<string>> first, map<string, list<string>> second);
     bool compare_list(list<string> first, list<string> second);
     bool compare_map1(map<string, bool> first, map<string, bool> second);
+    bool reachable_set(list<list<string>> grams, map <string, bool> reachableSymbols);
 };

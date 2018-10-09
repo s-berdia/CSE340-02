@@ -101,14 +101,8 @@ void task::tasktwo() {
     map<string, list<list<string>>> grams = getGrams();
     for (auto const &i: sortThem(getNon_terminals())){
         for (auto const &j: grams[i]){
-            bool reach = true;
             for (auto const &k: j){
-                if (!generatingSymbols[k]){
-                    reach = false;
-                }
-            }
-            if (reach){
-                for (auto const &k: j){
+                if (reachableSymbols[i] && generatingSymbols[i]){
                     reachableSymbols[k] = true;
                 }
             }
@@ -289,7 +283,6 @@ void task::taskfive() {
             }
             else{
                 for (auto const &q: first[k.front()]){
-                    // cout << h.first << ":" << k.front() << ":" << q << endl;
                     temp.insert(q);
                     size += 1;
                 }
@@ -301,6 +294,17 @@ void task::taskfive() {
         }
     }
     setParser("YES");
+}
+
+bool reachable_set(list<list<string>> grams, map <string, bool> reachableSymbols){
+    for (auto const &a: grams){
+        for (auto const &b: a){
+            if (!reachableSymbols[b]){
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 list<string> task::sortThem(list<string> terms){
