@@ -63,7 +63,7 @@ int main (int argc, char* argv[])
             map<string, list<list<string>>> grams = t.getGrams();
             list<string> non_terminals = t.getNon_terminals();
             if (find(useless.begin(), useless.end(), t.sortThem(non_terminals).front()) != useless.end()){
-                return 1;
+                break;
             }
             for (auto const &a: t.getOrderedGrams()){
                 if (find(useless.begin(), useless.end(), a.substr(0, 1)) != useless.end()){
@@ -125,11 +125,16 @@ int main (int argc, char* argv[])
             }
             break;
         }
-        case 5:
+        case 5:{
             // TODO: perform task 5.
+            list<string> useless = t.getUselessSymbols();
+            if (find(useless.begin(), useless.end(), t.sortThem(t.getNon_terminals()).front()) != useless.end()){
+                cout << "NO" << endl;
+                break;
+            }
             cout << t.getParser() << endl;
             break;
-
+        }
         default:
             cout << "Error: unrecognized task number " << task << "\n";
             break;
