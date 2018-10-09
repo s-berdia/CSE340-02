@@ -63,29 +63,30 @@ int main (int argc, char* argv[])
             map<string, list<list<string>>> grams = t.getGrams();
             list<string> non_terminals = t.getNon_terminals();
             if (find(useless.begin(), useless.end(), t.sortThem(non_terminals).front()) != useless.end()){
-                break;
+                return 1;
             }
-            for (auto const& l : t.sortThem(non_terminals)) {
-                if (find(useless.begin(), useless.end(), l) != useless.end()){
+            for (auto const &a: t.getOrderedGrams()){
+                if (find(useless.begin(), useless.end(), a.substr(0, 1)) != useless.end()){
                     continue;
                 }
-                for (auto const& i : grams[l]){
-                    bool use = true;
-                    for (auto const& k : i){
-                        if (find(useless.begin(), useless.end(), k) != useless.end()){
-                            use = false;
-                        }
+                bool use = true;
+                list<string> splits = t.splitString(a);
+                for (auto const &b: splits){
+                    if (find(useless.begin(), useless.end(), b) != useless.end()){
+                        use = false;
                     }
-                    if (use){
-                        cout << l << " ->" ;
-                        if (i.empty()){
-                            cout << " #";
-                        }
-                        for (auto const& k : i){
-                            cout << " " << k;
-                        }
-                        cout << endl;
+                }
+                if (use){
+                    cout << splits.front() << " -> ";
+                    splits.pop_front();
+                    if (splits.empty()){
+                        cout << "#" ;
                     }
+                    for (auto const &l: splits){
+                        cout << l ;
+                        cout << " ";
+                    }
+                    cout << endl;
                 }
             }
             break;

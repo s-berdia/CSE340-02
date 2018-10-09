@@ -11,9 +11,11 @@ void task::parse_gram(){
     LexicalAnalyzer lexer;
     Token token = lexer.GetToken();
     map<string, list<list<string>>> grams;
+    list<string> orderedGrams;
     map<string, int> orders;
     int order = 1;
     while(token.token_type != DOUBLEHASH) {
+        string gram = token.lexeme;
         if(orders.find(token.lexeme) == orders.end()){
             orders[token.lexeme] = order;
             order++;
@@ -27,6 +29,7 @@ void task::parse_gram(){
         list<string> terms;
         while (token.token_type != HASH){
             terms.push_back(token.lexeme);
+            gram += " " + token.lexeme + " ";
             if(orders.find(token.lexeme) == orders.end()){
                 orders[token.lexeme] = order;
                 order++;
@@ -40,8 +43,10 @@ void task::parse_gram(){
             tmp.push_back(terms);
             grams[terminal] = tmp;
         }
+        orderedGrams.push_back(gram);
         token = lexer.GetToken();
     }
+    setOrderedGrams(orderedGrams);
     setOrders(orders);
     setGrams(grams);
 }
@@ -101,8 +106,14 @@ void task::tasktwo() {
     map<string, list<list<string>>> grams = getGrams();
     for (auto const &i: sortThem(getNon_terminals())){
         for (auto const &j: grams[i]){
+            bool reach = true;
             for (auto const &k: j){
-                if (reachableSymbols[i] && generatingSymbols[i]){
+                if (!generatingSymbols[k]){
+                    reach = false;
+                }
+            }
+            for (auto const &k: j){
+                if (reachableSymbols[i] && generatingSymbols[i] && reach){
                     reachableSymbols[k] = true;
                 }
             }
@@ -432,4 +443,25 @@ const string &task::getParser() const{
 
 void task::setParser(const string &parser){
     task::parser = parser;
+}
+
+const list<string> &task::getOrderedGrams() const{
+    return task::orderedGrams;
+}
+
+void task::setOrderedGrams(const list<string> &orderedGrams){
+    task::orderedGrams = orderedGrams;
+}
+
+list<string> task::splitString(string str){
+    list<string> splits;
+    size_t current, previous = 0;
+    current = str.find(" ");
+    while (current != std::string::npos) {
+        splits.push_back(str.substr(previous, current - previous));
+        previous = current + 1;
+        current = str.find(" ", previous);
+    }
+    splits.push_back(str.substr(previous, current - previous));
+    return splits;
 }
