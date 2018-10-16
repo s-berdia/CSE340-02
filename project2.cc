@@ -127,11 +127,6 @@ int main (int argc, char* argv[])
         }
         case 5:{
             // TODO: perform task 5.
-            list<string> useless = t.getUselessSymbols();
-            if (find(useless.begin(), useless.end(), t.sortThem(t.getNon_terminals()).front()) != useless.end()){
-                cout << "NO" << endl;
-                break;
-            }
             cout << t.getParser() << endl;
             break;
         }

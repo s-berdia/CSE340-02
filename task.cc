@@ -112,8 +112,8 @@ void task::tasktwo() {
                     reach = false;
                 }
             }
-            for (auto const &k: j){
-                if (reachableSymbols[i] && generatingSymbols[i] && reach){
+            if (reachableSymbols[i] && generatingSymbols[i] && reach){
+                for (auto const &k: j){
                     reachableSymbols[k] = true;
                 }
             }
@@ -266,8 +266,48 @@ void task::taskfour() {
 }
 
 void task::taskfive() {
+    if (!getUselessSymbols().empty()){
+        setParser("NO");
+        return;
+    }
     map<string, list<string>> first = getFirst();
     map<string, list<string>> follow = getFollow();
+    for (auto const &h: getGrams()){
+        int size = 0;
+        set<string> temp;
+        if (h.second.size() > 1){
+            for (auto const &j: h.second){
+                bool epsilon = false;
+                for(auto const &k: j){
+                    list<string> foo = first[k];
+                    foo.remove("#");
+                    for (auto const &m: foo) {
+                        temp.insert(m);
+                        size++;
+                    }
+                    if(find(first[k].begin(), first[k].end(), "#") != first[k].end()){
+                        epsilon = true;
+                    }
+                    else{
+                        epsilon = false;
+                        break;
+                    }
+                }
+                if (j.empty()){
+                    temp.insert("#");
+                    size++;
+                }
+                if (epsilon){
+                    temp.insert("#");
+                    size++;
+                }
+            }
+            if(size != temp.size()){
+                setParser("NO");
+                return;
+            }
+        }
+    }
     for (auto const &h: first){
         if (find(h.second.begin(), h.second.end(), "#") != h.second.end()){
             bool intersect = true;
@@ -282,26 +322,6 @@ void task::taskfive() {
                 setParser("NO");
                 return;
             }
-        }
-    }
-    for (auto const &h: getGrams()){
-        int size = 0;
-        set<string> temp;
-        for (auto const &k: h.second){
-            if (k.empty()){
-                 temp.insert("#");
-                 size += 1;
-            }
-            else{
-                for (auto const &q: first[k.front()]){
-                    temp.insert(q);
-                    size += 1;
-                }
-            }
-        }
-        if(size != temp.size()){
-            setParser("NO");
-            return;
         }
     }
     setParser("YES");
